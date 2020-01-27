@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>labs tab</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style >
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons that are used to open the tab content */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        class TabHeader extends React.Component { 
+            render() {
+                const { headerTab, clickTab, tabActive, tabID } = this.props
+                return ( 
+                    <button 
+                        className= {"tablinks" + (tabActive === tabID && " active") }
+                        onClick={ clickTab }
+                    >
+                        { headerTab }
+                    </button>   
+                )   
+            }
+        }
+        class TabContent extends React.Component { 
+            render() {
+                const { headerTab, content, tabID, tabActive } = this.props
+                return ( 
+                    <div 
+                        id={tabID} 
+                        className= "tabcontent"
+                        style={ tabActive === tabID ? { display:"block" } : { display:"none" } }>
+                            <h3>{ headerTab }</h3>
+                            <p>{ content }</p>
+                    </div>  
+                )   
+            }
+        }
+        class App extends React.Component {
+            state ={
+                tabs: [
+                    { id: 0, name: "Home", content: "Home tabs " },
+                    { id: 1, name: "Menu1", content: "Menu1 tabs " },
+                    { id: 2, name: "Menu2", content: "Menu2 tabs " },
+                    { id: 3, name: "Menu3", content: "Menu3 tabs " },
+                    { id: 4, name: "Menu4", content: "Menu4 tabs " } 
+                ],
+                tabActive: 0
+            }
+            handlerCilck = item => () => {
+                this.setState(state => ({ 
+                    tabActive: item.id
+                })) 
+            }
+            render() {
+                return (
+                    <div> 
+                        <div className="tab">
+                            { this.state.tabs.map(item => {
+                                return (
+                                    <TabHeader 
+                                        key = { item.id }
+                                        tabID = { item.id }
+                                        headerTab = { item.name } 
+                                        clickTab = { this.handlerCilck(item) }
+                                        tabActive = { this.state.tabActive }
+                                    />
+                                ) 
+                            })  }
+                        </div>
+                        {this.state.tabs.map(item => {
+                            return ( 
+                                <TabContent 
+                                    key = { item.id }
+                                    tabID = { item.id }
+                                    headerTab = { item.name } 
+                                    content = { item.content }
+                                    tabActive = { this.state.tabActive }
+                                /> 
+                            )
+                        })}
+                    </div>
+                )
+            }
+        }
+
+        ReactDOM.render(
+            <App />, 
+            document.getElementById('root')
+        )
+    </script>
+</body>
+</html>
